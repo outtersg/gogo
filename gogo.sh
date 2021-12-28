@@ -20,6 +20,7 @@
 # SOFTWARE.
 
 # Guillaume Outters' Gentle Orderer
+# Grand Ordonnanceur de Guillaume Outters
 
 # Can either be used as part of a script (that has to define $GOGO_SCRIPTS as the directory containing gogo.sh)
 # or as a launcher, as in gogo.sh my_commands.sh
