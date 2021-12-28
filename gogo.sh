@@ -50,6 +50,11 @@ _gogo_colordisplayFilter()
 	sed -e "s/^/[${color}m/" -e "s/$/[0m/" 
 }
 
+gogo_warn()
+{
+	gogo_colordisplay 33 "$@" >&2
+}
+
 gogo_err()
 {
 	gogo_colordisplay 31 "$@" >&2
