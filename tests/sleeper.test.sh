@@ -1,7 +1,9 @@
 # run with:
-# ./gogo.sh test.sh
+# ./gogo.sh tests/sleeper.test.sh
 
 late() { sleep 4 ; Start sleep 2 ; Then echo "Started 4 s after everybody, slept 2, but expected to appear" ; }
+
+#- Simple tasks ordering -------------------------------------------------------
 
 Start sleep 8
 Then echo "Slept 8 (and nobody should have wait for me)"
@@ -12,5 +14,8 @@ do
 	Start sleep $d
 	Then w1: echo "Slept $d"
 done
-After "w0*,w1*" echo "Everyone finished (except the really long one)"
+After w0~,w1~ echo "Everyone finished (except the really long one)"
+
+#- Queue still functional after a break? ---------------------------------------
+
 Start late # This one will want to emit new instruction long after the main script has stacked its order. Will they get caught and executed?
