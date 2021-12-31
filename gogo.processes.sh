@@ -115,7 +115,7 @@ gogo_push()
 gogosse()
 {
 	IFS="$GOGO_IFS"
-	gogo_tifs gogo_br "$@"
+	gogo_tifs gogo_br $*
 }
 
 # Launch.
