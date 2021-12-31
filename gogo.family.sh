@@ -51,6 +51,74 @@ _gogosse()
 # Si pas de condition avant, on peut lancer tout de suite: gogol
 }
 
+# Resolves symbolic prerequisites in $@; result is stored in $prereq.
+# (prereqs found already finished are eaten immediately, doing a bit of gogo_ack_prereq())
+# Non-wildcard symbols are resolved immediately ("task,other" means "the latest instantiated tasks having names 'task' and 'other'").
+# Wildcard symbols are resolved immediately only if they are first in line:
+#   "task,other~" means "the last 'task' task, and every 'other' that may have been instantiated by 'task'" (so wait 'task' to finish before evaluating 'other~')
+#   "other~"      here we have no preceding task (that could emit other 'other's), so look up for tasks named 'other' immediately
+gogo_resolve_prereq()
+{
+	local pr sep=
+	prereq=
+	
+	for pr in "$@"
+	do
+		case "$pr" in
+			# "The whole family" (every task ever launched with this name):
+			*~)
+				case "$sep" in
+					# Only resolve if no preceding task is wait for.
+					"")
+						IFS=~
+						gogo_tifs _gogo_resolve_pr todo $pr
+						;;
+					# Else copy as is.
+					*) prereq="$prereq $pr" ;;
+				esac
+				;;
+			# [^0-9]*: A symbolic (not already resolved) but single (no wildcard) name;
+			#  [0-9]*: A numeric ID (already resolved), we just have to check it has finished:
+			*)
+				_gogo_resolve_pr curr "$pr"
+				;;
+			# @todo Handle *\* (x~ resolves to (possibly multiple) tasks named x, whereas x* refers to x as well as xy or xylophone).
+		esac
+		case "$pr" in
+			?*)
+				prereq="$prereq$pr$sep"
+				sep=' '
+				;;
+		esac
+	done
+	
+	# Already run prerequisites are not needed anymore: remove them.
+}
+
+# Resolve a single name, if found put result in $pr.
+# If 
+_gogo_resolve_pr()
+{
+	eval 'pr="$gogo_'$1'_'$2'"'
+	case "$pr" in
+		?*)
+			# Still running? Mark us as waiting for it, to speed up our resolution
+			# À FAIRE: sur waiters_, ne pas réinvoquer tout resolve, mais virer promptement juste la valeur de la liste. Sauf que derrière si on est le dernier (liste résultante vide), il faudra déclencher gogol => fonction haut niveau à appeler soit de resolve_prereq, soit de dede cuort-circuitant
+			gogo_waiters_= # Si pas déjà référencé comme attendant!
+			return
+			;;
+	esac
+	
+	# If not found, are there done tasks with this name?
+	
+	eval 'local done="$gogo_done_'$2'"'
+	case "$done" in
+		"") gogo_warn "$name depends on $2~, but no tasks has ever been launched with this name" ;;
+	esac
+	
+	# Nonetheless return an empty dependency.
+}
+
 # NOTE to self:
 # On my FreeBSD 11.2, to test for an empty variable, case in "") seems quicker than test -z.
 # With 10^6 iterations (6 nested loops over 10 elements each):
