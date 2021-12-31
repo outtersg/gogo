@@ -36,6 +36,7 @@ gogo_run()
 	GOGO_CHANNEL="$gigo"
 	GOGO_IFS="`printf '\003'`"
 	
+#set -x
 	gogo_ploop
 	gogo_boot_script
 	gogo_pool_loop
