@@ -65,6 +65,7 @@ gogo_pool_loop()
 	do
 		gogo_log 9 "--- new instruction: $dodo"
 		$dodo
+# @todo Handle differently errors than successes.
 # Comment s'assurer qu'un processus lancé en asynchrone a ajouté ce qu'il voulait dans la pile avant de rendre la main? A priori quand on le lance il faut lancer sa liste de course puis ajouter une instruction disant "c'est bon j'ai terminé et j'ai empilé tout ce que j'avais.
 # Ceci pour implémenter les boucles for d'après le résultat d'une commande listant ce qu'il y a à faire.
 # Comment détecter qu'il faut mourir faute de fils? Un wait global qui donne un ordre de mourir? Recevrait-il les SIGCHLD qui lui permettraient de détecter les morts une par une (gogo_dede: death detect)?
@@ -110,7 +111,7 @@ gogo_push()
 	unset IFS
 }
 
-# Start Subtask Execution.
+# Schedule Subtask Execution.
 gogosse()
 {
 	IFS="$GOGO_IFS"
