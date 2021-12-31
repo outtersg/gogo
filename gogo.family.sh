@@ -25,30 +25,52 @@ gogo_br()
 {
 	# Get a task ID.
 	
-	gogo_last_id=`expr $gogo_last_id + 1`
-	local id=$gogo_last_id
-	
-	# Store the task's command.
-	
-	eval gogo_t_$id=\"\$\"
-}
-
-_gogosse()
-{
-	local after=
+	gogo_id=`expr $gogo_id + 1`
+	local id=$gogo_id
+	local name
+	local prereq
 	while [ $# -gt 0 ]
 	do
 		case "$1" in
-			--after) ;;
-			--after-last) ;;
-			*:) ;;
+			--after) prereq="$2" ; shift ;;
+			--after-last) prereq=$gogo_sym_ ;;
+			*:) name="`IFS=: ; echo $1`" ;;
 			*) break ;;
 		esac
 		shift
 	done
-# Lui affecter un numéro de tâche
-	gogo_br 
-# Si pas de condition avant, on peut lancer tout de suite: gogol
+	
+	case "$prereq" in *,*) prereq="`echo "$prereq" | tr , ' '`" ;; esac
+	
+	# Store the task's command.
+	
+	eval gogo_comm_$id='"$*"'
+	# Prerequisites. We first try to resolve all symbolic one to "hard" ones (IDs).
+	gogo_resolve_prereq $prereq
+	eval gogo_prereq_$id='"$prereq"'
+	
+	gogo_last_=$id
+	if [ -n "$name" ]
+	then
+#		case "$gogo_names" in
+#			*" $name "*) true ;;
+#			*) gogo_names="$gogo_names$name "
+#		esac
+		eval \
+			gogo_last_$name=$id \
+			gogo_todo_$name='"$gogo_todo_'$name $id'"'
+	fi
+	# gogo_last_$id is voluntarily similar to gogo_last_$name, so that we can address a task either by name or by ID.
+	eval \
+		gogo_last_$id=$id
+	
+# À FAIRE: gogo_children? Cf. dede()
+if false ; then
+	case "$prereq" in
+		"") gogol & ;;
+		# @todo Foreground tasks? But we cannot autodetect them (if A Then B After A C (A ; C & B), we have no way to know when launching B that it should go foreground _after_ having background-launched the yet-to-be-declared C. Primary use would be them to modify environment for subsequent tasks, so for that see -e (export).
+	esac
+fi
 }
 
 # Resolves symbolic prerequisites in $@; result is stored in $prereq.

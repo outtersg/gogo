@@ -61,7 +61,7 @@ gogo_gloop()
 gogo_pool_loop()
 {
 	local dodo
-	local gogo_children gogo_dead gogo_last_id=0
+	local gogo_children gogo_dead gogo_id=0
 	while read dodo
 	do
 		gogo_log 9 "--- new instruction: $dodo"
