@@ -119,6 +119,38 @@ _gogo_resolve_pr()
 	# Nonetheless return an empty dependency.
 }
 
+# Removes already finished prerequisites from $pr.
+gogo_ack_prereq()
+{
+	local pr
+	
+	prereq=
+	
+	# If first prereq is symbolic, resolve it.
+	
+	while [ -z "$prereq" ]
+	do
+		case "$1" in
+			[^0-9]*) 
+				gogo_resolve_prereq "$1" # Will fill $prereq if necessary.
+				shift
+				;;
+			*) break ;;
+		esac
+	done
+	
+	# Now loop over remaining items.
+	
+	for pr in "$@"
+	do
+		case "$pr" in
+			# Symbolic prereq, but not first prereq: skip for later.
+			[^0-9]*) prereq="$prereq
+				_gogo_resolve_pr curr "$pr"
+		esac
+	done
+}
+
 # NOTE to self:
 # On my FreeBSD 11.2, to test for an empty variable, case in "") seems quicker than test -z.
 # With 10^6 iterations (6 nested loops over 10 elements each):
