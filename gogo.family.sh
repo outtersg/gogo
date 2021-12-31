@@ -50,3 +50,13 @@ _gogosse()
 	gogo_br 
 # Si pas de condition avant, on peut lancer tout de suite: gogol
 }
+
+# NOTE to self:
+# On my FreeBSD 11.2, to test for an empty variable, case in "") seems quicker than test -z.
+# With 10^6 iterations (6 nested loops over 10 elements each):
+# case "$coucou" in "") ;; esac
+#   0,6 s (coucou not defined)
+#   0,8 s (coucou holds 8 characters)
+# [ -z "$coucou" ]
+#   1,2 s (coucou not defined)
+#   1,7 s (coucou holds 8 characters)
