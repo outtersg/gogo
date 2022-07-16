@@ -167,8 +167,10 @@ gogo_ack_prereq()
 	do
 		case "$pr" in
 			# Symbolic prereq, but not first prereq: skip for later.
-			[^0-9]*) prereq="$prereq
+			[^0-9]*)
+				#prereq="$prereq
 				_gogo_resolve_pr curr "$pr"
+				;;
 		esac
 	done
 }
