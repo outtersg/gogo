@@ -40,9 +40,12 @@ gogo_colordisplay()
 	local message="$*"
 	local ret="`printf '\n'`"
 	case "$message" in
+		*""*) message="`echo "$message" | sed -e "s//[36m_[${color}m/g"`"
+	esac
+	case "$message" in
 		"") _gogo_colordisplayFilter "$color" ;;
 		*"$ret"*) echo "$message" | _gogo_colordisplayFilter "$color" ;;
-		*) printf "%s\n" "[${color}m$*[0m" ;;
+		*) printf "%s%s%s\n" "[${color}m" "$message" "[0m" ;;
 	esac
 }
 
