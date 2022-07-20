@@ -86,6 +86,15 @@ gogo_dech()
 # DEtect DEath.
 gogo_dede()
 {
+	# @todo Have both ways of registering death: declarative (here we receive a task ID), or authoritative (see gogo_dede_by_pid()).
+	#       Problem of declarative is that it relies on the child writing to our channel after having finished; so a crash will ruin it.
+	#       Problem of authoritative is that can we rely on jobs being implemented similarly everywhere?
+	gogo_log 9 "--- $1 finished"
+	# @todo Call gogo_dede_by_pid from time to time (or on signal) to detect children that have crashed without notifying.
+}
+
+gogo_dede_by_pid()
+{
 	local child children
 	# @todo Alternate ways of detecting death: with jobs, or plain old ps. For each solution, measure shell compatibility and reliance.
 	for child in $gogo_children
