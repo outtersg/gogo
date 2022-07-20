@@ -63,6 +63,7 @@ gogo_br()
 	# gogo_last_$id is voluntarily similar to gogo_last_$name, so that we can address a task either by name or by ID.
 	eval \
 		gogo_last_$id=$id
+	gogo_log 9 "---   $id \"$name\" ($prereq)"
 	
 # À FAIRE: gogo_children? Cf. dede()
 if false ; then
