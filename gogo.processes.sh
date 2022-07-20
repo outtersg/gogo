@@ -147,7 +147,7 @@ gogol()
 	local gogoret=0
 	"$@" || gogoret=$?
 	# @todo Handle -e, to export resulting env variables.
-	echo "gogo_dede $$ $gogoret" > "$GOGO_CHANNEL"
+	echo "gogo_dede $gogo_me $gogoret" >> "$GOGO_CHANNEL"
 }
 
 #- Utils -----------------------------------------------------------------------
