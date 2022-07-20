@@ -65,13 +65,11 @@ gogo_br()
 		gogo_last_$id=$id
 	gogo_log 9 "---   $id \"$name\" ($prereq)"
 	
-# À FAIRE: gogo_children? Cf. dede()
-if false ; then
+	# If all of our prereqs are resolved, launch immediately.
 	case "$prereq" in
-		"") gogol & ;;
+		"") gogoliath $id "$@" ;;
 		# @todo Foreground tasks? But we cannot autodetect them (if A Then B After A C (A ; C & B), we have no way to know when launching B that it should go foreground _after_ having background-launched the yet-to-be-declared C. Primary use would be them to modify environment for subsequent tasks, so for that see -e (export).
 	esac
-fi
 }
 
 # Resolves symbolic prerequisites in $@; result is stored in $prereq.
