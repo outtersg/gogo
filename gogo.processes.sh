@@ -106,7 +106,7 @@ gogo_push()
 {
 	IFS="$GOGO_IFS"
 	# @todo In case of really special characters (LF), encode the command line.
-	echo "gogosse" "$*" > $GOGO_CHANNEL
+	echo "gogosse" "$*" >> $GOGO_CHANNEL
 	unset IFS
 }
 
