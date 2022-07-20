@@ -104,7 +104,7 @@ gogo_dede_by_pid()
 			children="$children $child"
 		else
 			gogo_dead="$gogo_dead $child"
-			gogo_log 9 "--- $child died"
+			gogo_log 9 "--- PID $child finished"
 		fi
 	done
 	gogo_children="$children"
