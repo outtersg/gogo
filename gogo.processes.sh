@@ -128,6 +128,19 @@ gogosse()
 	gogo_tifs gogo_br $*
 }
 
+# Launch Independently in an Asynchronous Thread from Here
+gogoliath()
+{
+	case $# in 1) eval "gogoliath $1 \$gogo_comm_$1" ; return ;; esac
+	
+	local id="$1" ; shift
+	gogo_log 5 "--- launching $id: $*"
+	gogo_me=$id
+	gogol "$@" &
+	gogo_children="$gogo_children $!"
+	eval gogo_pid_$1=$!
+}
+
 # Launch.
 gogol()
 {
