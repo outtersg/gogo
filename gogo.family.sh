@@ -102,7 +102,7 @@ gogo_resolve_prereq()
 			# [^0-9]*: A symbolic (not already resolved) but single (no wildcard) name;
 			#  [0-9]*: A numeric ID (already resolved), we just have to check it has finished:
 			*)
-				_gogo_resolve_pr curr "$pr"
+				_gogo_resolve_pr last "$pr"
 				;;
 			# @todo Handle *\* (x~ resolves to (possibly multiple) tasks named x, whereas x* refers to x as well as xy or xylophone).
 		esac
@@ -169,7 +169,7 @@ gogo_ack_prereq()
 			# Symbolic prereq, but not first prereq: skip for later.
 			[^0-9]*)
 				#prereq="$prereq
-				_gogo_resolve_pr curr "$pr"
+				_gogo_resolve_pr last "$pr"
 				;;
 		esac
 	done
