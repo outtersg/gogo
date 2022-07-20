@@ -110,8 +110,23 @@ gogo_dance()
 		if grep -q 'gogogo()' < "$f"
 		then
 			. "$f"
+			gogo_boot_script() { ( export GOGO_CHANNEL ; gogogo ) & }
 		else
-			gogogo() { . "$f" ; }
+			# The script may embed both utility function definitions (that should be played in the loop runner, so that its env gets the utilities),
+			# and a sequence of instructions to start subprocesses (that should be played by the loop filler).
+			# For having the utilities available in the (runner's) env, it cannot be run in a subshell like above;
+			# BUT we cannot either run the filler sequentially before the runner (because the filler will fill the pipe, and will block if the runner, not yet launched, does not consume it).
+			# So we have to short-circuit the filler low-level funcs, so that they delay their write: it means we will run the first commands only after the last one has been piped.
+			gogo_boot_script()
+			{
+				export GOGO_CHANNEL=$gigo.tmp
+				touch $gigo.tmp && chmod 600 $gigo.tmp
+				> $gigo.tmp
+				. "$f" # Runs in master process (so affects the env), but with GOGO_CHANNEL redirected to a conventional file instead of a blocking fifo.
+				( cat $gigo.tmp > $gigo ; rm $gigo.tmp ) & # Now copy the file to the FIFO, in a subshell (no matter if it blocks).
+				export GOGO_CHANNEL=$gigo
+				# And now let the loop run.
+			}
 		fi
 		
 		gogo_run

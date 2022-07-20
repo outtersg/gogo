@@ -37,7 +37,7 @@ gogo_run()
 	GOGO_IFS="`printf '\003'`"
 	
 	gogo_ploop
-	( export GOGO_CHANNEL ; gogogo ) &
+	gogo_boot_script
 	gogo_pool_loop
 	gogo_gloop
 }
