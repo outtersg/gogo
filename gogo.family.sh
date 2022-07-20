@@ -76,6 +76,8 @@ fi
 # Resolves symbolic prerequisites in $@; result is stored in $prereq.
 # (prereqs found already finished are eaten immediately, doing a bit of gogo_ack_prereq())
 # Non-wildcard symbols are resolved immediately ("task,other" means "the latest instantiated tasks having names 'task' and 'other'").
+# @todo Shouldn't we be symetric with later case? could 'task' emit an 'other' that this one wants to wait for? May we distinguish with an ? or a ; ("task,other": the latest instanciated before me; "task,?other" or "task;other": resolve "other" only when task has run, so that 'other' can have been emitted by 'task')?
+# @todo "task!" could be read as "task and every subtask" (subtask being "any task added while task was running").
 # Wildcard symbols are resolved immediately only if they are first in line:
 #   "task,other~" means "the last 'task' task, and every 'other' that may have been instantiated by 'task'" (so wait 'task' to finish before evaluating 'other~')
 #   "other~"      here we have no preceding task (that could emit other 'other's), so look up for tasks named 'other' immediately
