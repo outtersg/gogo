@@ -72,6 +72,12 @@ gogo_br()
 	esac
 }
 
+# Death Registry: unblock tasks that were waiting for us.
+gogo_dr()
+{
+	eval "echo BOUH $1: \$gogo_waiters_$1"
+}
+
 # Resolves symbolic prerequisites in $@; result is stored in $prereq.
 # (prereqs found already finished are eaten immediately, doing a bit of gogo_ack_prereq())
 # Non-wildcard symbols are resolved immediately ("task,other" means "the latest instantiated tasks having names 'task' and 'other'").

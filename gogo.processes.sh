@@ -91,6 +91,7 @@ gogo_dede()
 	#       Problem of authoritative is that can we rely on jobs being implemented similarly everywhere?
 	gogo_log 9 "--- $1 finished"
 	# @todo Call gogo_dede_by_pid from time to time (or on signal) to detect children that have crashed without notifying.
+	gogo_dr $1
 }
 
 gogo_dede_by_pid()
