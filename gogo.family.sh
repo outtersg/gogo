@@ -100,7 +100,7 @@ gogo_resolve_prereq()
 					# Only resolve if no preceding task is wait for.
 					"")
 						IFS=~
-						gogo_tifs _gogo_resolve_pr todo $pr
+						gogo_tifs _gogo_resolve_pr $pr
 						;;
 					# Else copy as is.
 					*) prereq="$prereq $pr" ;;
@@ -109,7 +109,7 @@ gogo_resolve_prereq()
 			# [^0-9]*: A symbolic (not already resolved) but single (no wildcard) name;
 			#  [0-9]*: A numeric ID (already resolved), we just have to check it has finished:
 			*)
-				_gogo_resolve_pr last "$pr"
+				_gogo_resolve_pr -1 "$pr"
 				;;
 			# @todo Handle *\* (x~ resolves to (possibly multiple) tasks named x, whereas x* refers to x as well as xy or xylophone).
 		esac
@@ -128,7 +128,9 @@ gogo_resolve_prereq()
 # If 
 _gogo_resolve_pr()
 {
-	eval 'pr="$gogo_'$1'_'$2'"'
+	local s=todo # Which set do we select from?
+	case "$1" in -1) shift ; s=last ;; esac
+	eval 'pr="$gogo_'${s}_$1\"
 	case "$pr" in
 		?*)
 			# Still running? Mark us as waiting for it, to speed up our resolution
@@ -140,9 +142,10 @@ _gogo_resolve_pr()
 	
 	# If not found, are there done tasks with this name?
 	
-	eval 'local done="$gogo_done_'$2'"'
+	eval 'local done="$gogo_done_'$1'"'
 	case "$done" in
-		"") gogo_warn "$name depends on $2~, but no tasks has ever been launched with this name" ;;
+		"") gogo_warn "$name depends on $1, but no tasks has ever been launched with this name" ;;
+		# @todo (in debug mode only) write that $id depended on it / them.
 	esac
 	
 	# Nonetheless return an empty dependency.
@@ -176,7 +179,7 @@ gogo_ack_prereq()
 			# Symbolic prereq, but not first prereq: skip for later.
 			[^0-9]*)
 				#prereq="$prereq
-				_gogo_resolve_pr last "$pr"
+				_gogo_resolve_pr -1 "$pr"
 				;;
 		esac
 	done
