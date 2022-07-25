@@ -33,7 +33,7 @@ gogo_br()
 	do
 		case "$1" in
 			--after) prereq="$2" ; shift ;;
-			--after-last) prereq=$gogo_sym_ ;;
+			--after-last) prereq=$gogo_last_ ;;
 			*:) name="`IFS=: ; echo $1`" ;;
 			*) break ;;
 		esac
