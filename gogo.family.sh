@@ -20,6 +20,18 @@
 
 ### Name children and all
 
+# All of those functions are to be run in the runner subshell.
+
+# Global variables:
+# (all "list" variables are space-separated)
+# gogo_todo_xxx: list of task IDs with name "xxx" that are waiting to run, or running.
+# gogo_done_xxx: list of task IDs with name "xxx" that finished running.
+# gogo_last_xxx: ID of the last task declared with name xxx (or empty if it finished running).
+# gogo_todo_ and gogo_last_ contain non-named as well as named tasks.
+# gogo_prereq_id: all prerequisites of a task.
+# gogo_waiters_id: who is waiting on task id? (if $gogo_prereq_2 = 1, then $gogo_waiters_1 = 2)
+# gogo_names: all symbolic names ever used by a task.
+
 # Birth Registry
 gogo_br()
 {
