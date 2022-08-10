@@ -86,6 +86,20 @@ gogo_br()
 	esac
 }
 
+# Remove a value from all parameters.
+# The resulting list is in $output.
+gogo_obliterate()
+{
+	local except="$1" ; shift
+	output=""
+	while true
+	do
+		case "$1" in "$except") shift ; output="$output$*" ; return ;; esac
+		output="$output$1 "
+		shift
+	done
+}
+
 # Death Registry: unblock tasks that were waiting for us.
 gogo_dr()
 {
