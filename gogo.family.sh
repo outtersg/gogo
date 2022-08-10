@@ -150,6 +150,12 @@ _gogo_resolve_pr()
 			# Still running? Mark us as waiting for it, to speed up our resolution
 			# À FAIRE: sur waiters_, ne pas réinvoquer tout resolve, mais virer promptement juste la valeur de la liste. Sauf que derrière si on est le dernier (liste résultante vide), il faudra déclencher gogol => fonction haut niveau à appeler soit de resolve_prereq, soit de dede cuort-circuitant
 			gogo_waiters_= # Si pas déjà référencé comme attendant!
+			# @todo Do modify gogo_waiters only if "$pr" was alphabetical. Else it should already be in it.
+			local idpr
+			for idpr in $pr
+			do
+				case "$idpr" in [0-9]*) eval "gogo_waiters_$idpr=\"\${gogo_waiters_$idpr}$id \"" ;; esac
+			done
 			return
 			;;
 	esac
