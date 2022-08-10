@@ -105,7 +105,28 @@ gogo_obliterate()
 # Death Registry: unblock tasks that were waiting for us.
 gogo_dr()
 {
-	eval "echo BOUH $1: \$gogo_waiters_$1"
+	local id=$1 waiter waiters name prereq
+	eval \
+	"
+		waiters=\"\$gogo_waiters_$1\"
+		name=\"\$gogo_name_$id\"
+		if [ -n \"\$name\" ]
+		then
+			case \"\$gogo_last_$name\" in $id) unset gogo_last_$name ;; esac
+			gogo_done_$name=\"\$gogo_done_$name$id \"
+			case \" \$gogo_todo_$name \" in *\" $id \"*) gogo_obliterate $id \$gogo_todo_$name ; gogo_todo_$name=\"\$output\" ;; esac
+		fi
+	"
+	case "$gogo_last_" in $id) unset gogo_last_ ;; esac
+	case " $gogo_todo_ " in *" $id "*) gogo_obliterate $id $gogo_todo_ ; gogo_todo_="$output" ;; esac
+	
+	for waiter in $waiters
+	do
+		# Are we its last dependency?
+		eval 'prereq="$gogo_prereq_'$id\"
+		gogo_resolve_prereq $prereq
+		case "$pr" in "") gogoliath $waiter ;; esac
+	done
 }
 
 # Resolves symbolic prerequisites in $@; result is stored in $prereq.
