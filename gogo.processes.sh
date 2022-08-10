@@ -62,7 +62,7 @@ gogo_pool_loop()
 {
 	local dodo
 	local gogo_children gogo_dead gogo_id=0
-	while read dodo
+	while read dodo || { [ -n "$gogo_todo_" ] && dodo="sleep 1" ; }
 	do
 		gogo_log 9 "--- new instruction: $dodo"
 		$dodo
