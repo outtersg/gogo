@@ -64,6 +64,7 @@ gogo_br()
 	eval gogo_prereq_$id='"$prereq"'
 	
 	gogo_last_=$id
+	gogo_todo_="$gogo_todo_$id "
 	if [ -n "$name" ]
 	then
 #		case "$gogo_names" in
@@ -76,7 +77,8 @@ gogo_br()
 	fi
 	# gogo_last_$id is voluntarily similar to gogo_last_$name, so that we can address a task either by name or by ID.
 	eval \
-		gogo_last_$id=$id
+		gogo_last_$id=$id \
+		gogo_name_$id=$name
 	gogo_log 9 "---   [$id] \"$name\" (depends on: $prereq)"
 	
 	# If all of our prereqs are resolved, launch immediately.
