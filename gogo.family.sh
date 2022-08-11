@@ -64,7 +64,8 @@ gogo_br()
 	eval gogo_prereq_$id='"$prereq"'
 	
 	gogo_last_=$id
-	gogo_todo_="$gogo_todo_$id "
+echo "AVANT ZZZ${gogo_todo_}ZZZ"
+	gogo_todo_="$gogo_todo_ $id"
 	if [ -n "$name" ]
 	then
 #		case "$gogo_names" in
