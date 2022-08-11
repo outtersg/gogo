@@ -58,11 +58,16 @@ gogo_gloop()
 
 #- Loop ------------------------------------------------------------------------
 
+_gogo_wait_for()
+{
+	sleep 1
+}
+
 gogo_pool_loop()
 {
 	local dodo
 	local gogo_children gogo_dead gogo_id=0
-	while read dodo || { [ -n "$gogo_todo_" ] && dodo="sleep 1" ; }
+	while read dodo || { [ -n "$gogo_todo_" ] && dodo="_gogo_wait_for $gogo_todo_" ; }
 	do
 		gogo_log 9 "--- new instruction: $dodo"
 		$dodo
