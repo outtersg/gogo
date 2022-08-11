@@ -150,7 +150,7 @@ gogo_resolve_prereq()
 				case "$sep" in
 					# Only resolve if no preceding task is wait for.
 					"")
-						IFS=~
+						IFS='~'
 						gogo_tifs _gogo_resolve_pr $pr
 						;;
 					# Else copy as is.
