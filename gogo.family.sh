@@ -79,6 +79,7 @@ echo "AVANT ZZZ${gogo_todo_}ZZZ"
 	fi
 	# gogo_last_$id is voluntarily similar to gogo_last_$name, so that we can address a task either by name or by ID.
 	eval \
+		gogo_children_$ptid=\"\${gogo_children_$ptid}$id \" \
 		gogo_last_$id=$id \
 		gogo_name_$id=$name
 	gogo_log 9 "---   [$id] \"$name\" (depends on: $prereq)"
