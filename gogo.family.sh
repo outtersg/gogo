@@ -128,9 +128,9 @@ gogo_dr()
 	for waiter in $waiters
 	do
 		# Are we its last dependency?
-		eval 'prereq="$gogo_prereq_'$id\"
+		eval 'prereq="$gogo_prereq_'$waiter\"
 		gogo_resolve_prereq $waiter $prereq
-		case "$pr" in "") gogoliath $waiter ;; esac
+		case "$prereq" in "") gogoliath $waiter ;; esac
 	done
 	
 	gogo_log 9 "--- finished handling death of $id"
