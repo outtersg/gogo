@@ -122,6 +122,7 @@ gogo_dede_by_pid()
 # To be called by the script.
 gogo_push()
 {
+	set -- --from "$GOGO_ID" "$@"
 	IFS="$GOGO_IFS"
 	# @todo In case of really special characters (LF), encode the command line.
 	echo "gogosse" "$*" >> $GOGO_CHANNEL

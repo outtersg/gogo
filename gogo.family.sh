@@ -38,7 +38,7 @@ gogo_br()
 	# Get a task ID.
 	
 	gogo_id=`expr $gogo_id + 1`
-	local id=$gogo_id
+	local id=$gogo_id ptid=0
 	local name
 	local prereq
 	while [ $# -gt 0 ]
@@ -46,6 +46,7 @@ gogo_br()
 		case "$1" in
 			--after) prereq="$2" ; shift ;;
 			--after-last) prereq=$gogo_last_ ;;
+			--from) ptid=$2 ; shift ;;
 			*:) name="`IFS=: ; echo $1`" ;;
 			*) break ;;
 		esac
