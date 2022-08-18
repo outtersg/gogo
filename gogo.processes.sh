@@ -140,6 +140,10 @@ gogoliath()
 {
 	case $# in 1) eval "gogoliath $1 \$gogo_comm_$1" ; return ;; esac
 	
+	# Launching a simple checkpoint (e.g. when we want to launch 5, 6, 7 after 1, 2, 3 have finished, it is simpler to have a pseudo-task 4 that waits for 1, 2, 3, and then having 5, 6, 7 each wait on 4, than having 5, 6, 7 each rely directly on 1, 2, and 3)?
+	# Then no need to launch and wait for completion, notifying waiters directly is more efficient.
+	case "$#$2" in 2true) gogo_dr $1 ; return ;; esac
+	
 	local id="$1" ; shift
 	gogo_log 5 "--- launching $id: $*"
 	gogo_me=$id
