@@ -209,6 +209,11 @@ _gogo_resolve_pr()
 	# Nonetheless return an empty dependency.
 }
 
+_gogo_will_wait()
+{
+	eval "gogo_waiters_$1=\"\${gogo_waiters_$1}$2 \""
+}
+
 # Removes already finished prerequisites from $pr.
 gogo_ack_prereq()
 {
