@@ -104,6 +104,17 @@ gogo_obliterate()
 	done
 }
 
+# NOTE: "after task 5 and of the children it created"
+# We had two options here:
+# 1. Have a pseudo-task whose *id* included an x (5x);
+#    have all tasks requiring 5 having a dependency not to 5, but to 5x;
+#    have 5x itself depend on 5 and all children that were created advertizing they were sons of 5.
+#    Advantages: we could reuse the cascading mechanism as is
+#    Disadvantage: overhead, particularly for simple tasks having no child.
+# 2. Have a dedicated handling (another variable) to distinguish waiters waiting for "5" (5s) from those waiting for "5 and its children" (5).
+# 3. Mix both (have a variable to store children; when 5 finishes, see if it has children: if yes, spit a pseudo-task and replace variables as if only 5s had finished).
+# We chose 3. here (see "Only switch to the pseudo-task […]").
+
 # Death Registry: unblock tasks that were waiting for us.
 gogo_dr()
 {
