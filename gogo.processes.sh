@@ -35,6 +35,7 @@ gogo_run()
 	local gigo=/tmp/temp.gogo.$$/gigo # Gogo In, Gogo Out
 	GOGO_CHANNEL="$gigo"
 	GOGO_IFS="`printf '\003'`"
+	export GOGO_ID=0 # All tasks run in the boot script are children of pseudo-task 0.
 	
 #set -x
 	gogo_ploop
@@ -151,6 +152,7 @@ gogoliath()
 gogol()
 {
 	local gogoret=0
+	export GOGO_ID=$gogo_me
 	"$@" || gogoret=$?
 	# @todo Handle -e, to export resulting env variables.
 	echo "gogo_dede $gogo_me $gogoret" >> "$GOGO_CHANNEL"
