@@ -192,7 +192,7 @@ _gogo_resolve_pr()
 			local idpr
 			for idpr in $pr
 			do
-				case "$idpr" in [0-9]*) eval "gogo_waiters_$idpr=\"\${gogo_waiters_$idpr}$id \"" ;; esac
+				case "$idpr" in [0-9]*) _gogo_will_wait $idpr $id ;; esac
 			done
 			return
 			;;
