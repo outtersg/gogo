@@ -37,7 +37,6 @@ gogo_run()
 	GOGO_IFS="`printf '\003'`"
 	export GOGO_ID=0 # All tasks run in the boot script are children of pseudo-task 0.
 	
-#set -x
 	gogo_ploop
 	gogo_boot_script
 	gogo_pool_loop
