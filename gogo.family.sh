@@ -146,7 +146,7 @@ gogo_dr()
 #   "other~"      here we have no preceding task (that could emit other 'other's), so look up for tasks named 'other' immediately
 gogo_resolve_prereq()
 {
-	local pr sep= id="$1" ; shift # _gogo_resolve_pr() relies on $id being defined.
+	local pr id="$1" ; shift # _gogo_resolve_pr() relies on $id being defined.
 	prereq=
 	
 	for pr in "$@"
@@ -154,15 +154,8 @@ gogo_resolve_prereq()
 		case "$pr" in
 			# "The whole family" (every task ever launched with this name):
 			*~)
-				case "$sep" in
-					# Only resolve if no preceding task is wait for.
-					"")
 						IFS='~'
 						gogo_tifs _gogo_resolve_pr $pr
-						;;
-					# Else copy as is.
-					*) prereq="$prereq $pr" ;;
-				esac
 				;;
 			# [^0-9]*: A symbolic (not already resolved) but single (no wildcard) name;
 			#  [0-9]*: A numeric ID (already resolved), we just have to check it has finished:
@@ -172,10 +165,7 @@ gogo_resolve_prereq()
 			# @todo Handle *\* (x~ resolves to (possibly multiple) tasks named x, whereas x* refers to x as well as xy or xylophone).
 		esac
 		case "$pr" in
-			?*)
-				prereq="$prereq$pr$sep"
-				sep=' '
-				;;
+			?*) prereq="$prereq$pr " ;;
 		esac
 	done
 	
