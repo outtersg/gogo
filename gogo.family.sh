@@ -108,6 +108,7 @@ gogo_obliterate()
 gogo_dr()
 {
 	local id=$1 waiter waiters name prereq
+	gogo_log 9 "--- starting cleaning after death of $id"
 	eval \
 	"
 		waiters=\"\$gogo_waiters_$1\"
@@ -122,6 +123,8 @@ gogo_dr()
 	case "$gogo_last_" in $id) unset gogo_last_ ;; esac
 	case " $gogo_todo_ " in *" $id "*) gogo_obliterate $id $gogo_todo_ ; gogo_todo_="$output" ;; esac
 	
+	gogo_log 9 "--- looking for waiters of $id ($waiters) that become launchable"
+	
 	for waiter in $waiters
 	do
 		# Are we its last dependency?
@@ -129,6 +132,8 @@ gogo_dr()
 		gogo_resolve_prereq $prereq
 		case "$pr" in "") gogoliath $waiter ;; esac
 	done
+	
+	gogo_log 9 "--- finished handling death of $id"
 }
 
 # Resolves symbolic prerequisites in $@; result is stored in $prereq.
