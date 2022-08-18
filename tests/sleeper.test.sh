@@ -14,7 +14,7 @@ do
 	Start sleep $d
 	Then w1: echo "Slept $d"
 done
-After w0~,w1~ echo "Everyone finished (except the really long one)"
+After w0~,w1~ echo "Everyone finished (except the really long one, and sleepy the late)"
 
 #- Queue still functional after a break? ---------------------------------------
 
