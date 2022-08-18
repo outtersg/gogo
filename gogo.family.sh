@@ -149,9 +149,17 @@ gogo_resolve_prereq()
 	local pr id="$1" ; shift # _gogo_resolve_pr() relies on $id being defined.
 	prereq=
 	
-	for pr in "$@"
+	while [ $# -gt 0 ]
 	do
+		pr="$1"
 		case "$pr" in
+			# On ; return, letting aliases to be resolved later (once all prereqs before the ; are finished).
+			\;)
+				# But if every prereq preceding the ; has already finished, ignore the ;
+				case "$prereq" in "") continue ;; esac
+				prereq="$prereq $*"
+				return
+				;;
 			# "The whole family" (every task ever launched with this name):
 			*~)
 						IFS='~'
@@ -167,6 +175,7 @@ gogo_resolve_prereq()
 		case "$pr" in
 			?*) prereq="$prereq$pr " ;;
 		esac
+		shift
 	done
 	
 	# Already run prerequisites are not needed anymore: remove them.
