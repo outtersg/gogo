@@ -61,7 +61,7 @@ gogo_br()
 	# Prerequisites. We first try to resolve all symbolic one to "hard" ones (IDs).
 	# @todo Have $id passed as PPID for each subtask launched during a function call; have subtasks added to the parent's prereqs;
 	#       Have the main loop be $id 0 (thus functions launched at root level are children of 0); have 0 finish when all its children have died.
-	gogo_resolve_prereq $prereq
+	gogo_resolve_prereq $id $prereq
 	eval gogo_prereq_$id='"$prereq"'
 	
 	gogo_last_=$id
@@ -129,7 +129,7 @@ gogo_dr()
 	do
 		# Are we its last dependency?
 		eval 'prereq="$gogo_prereq_'$id\"
-		gogo_resolve_prereq $prereq
+		gogo_resolve_prereq $waiter $prereq
 		case "$pr" in "") gogoliath $waiter ;; esac
 	done
 	
@@ -146,7 +146,7 @@ gogo_dr()
 #   "other~"      here we have no preceding task (that could emit other 'other's), so look up for tasks named 'other' immediately
 gogo_resolve_prereq()
 {
-	local pr sep=
+	local pr sep= id="$1" ; shift # _gogo_resolve_pr() relies on $id being defined.
 	prereq=
 	
 	for pr in "$@"
