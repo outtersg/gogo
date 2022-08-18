@@ -165,8 +165,15 @@ gogo_resolve_prereq()
 						IFS='~'
 						gogo_tifs _gogo_resolve_pr $pr
 				;;
+			# [0-9]*: A numeric ID (already resolved), we just have to check it has finished:
+			# @duplicate _gogo_set_prereq_ids()
+			[0-9]*)
+				case " $gogo_todo_ " in
+					*" $pr "*) _gogo_will_wait $pr $id ;;
+					*) pr= ;;
+				esac
+				;;
 			# [^0-9]*: A symbolic (not already resolved) but single (no wildcard) name;
-			#  [0-9]*: A numeric ID (already resolved), we just have to check it has finished:
 			*)
 				_gogo_resolve_pr -1 "$pr"
 				;;
