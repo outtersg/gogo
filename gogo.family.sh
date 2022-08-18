@@ -111,8 +111,32 @@ gogo_dr()
 	gogo_log 9 "--- starting cleaning after death of $id"
 	eval \
 	"
-		waiters=\"\$gogo_waiters_$1\"
+		# If we have children, only close the task itself, not the whole family.
+		case \"\$gogo_children_$id\" in
+			?*)
+				# Replace the task by its closing-pseudo-task (which represents the whole family: the task and its children);
+				# This is a simplified version of gogo_br:
+				_gogo_set_prereq_ids $id \$gogo_children_$id
+				case \"\$gogo_prereq_$id\" in
+					# Only switch to the pseudo-task if some children still run:
+					[^\\ ]*)
+						gogo_children_$id= # Not needed anymore: they are either finished, or pushed to \$gogo_prereq_$id.
+						gogo_comm_$id=true
+						# Now work on the task itself, not on its family group.
+						id=\${id}_itself
+						gogo_log 9 \"--- $id becomes \$id, $id now points to the pseudo-task that waits for all children of $1 (\$gogo_prereq_$id) to complete\"
+						;;
+				esac
+				;;
+		esac
+	"
+	eval \
+	"
+		waiters=\"\$gogo_waiters_$id\"
 		name=\"\$gogo_name_$id\"
+	"
+	eval \
+	"
 		if [ -n \"\$name\" ]
 		then
 			case \"\$gogo_last_$name\" in $id) unset gogo_last_$name ;; esac
@@ -134,6 +158,22 @@ gogo_dr()
 	done
 	
 	gogo_log 9 "--- finished handling death of $id"
+}
+
+_gogo_set_prereq_ids()
+{
+	local id="$1" pr ; shift
+	prs=
+	for pr in "$@"
+	do
+		case " $gogo_todo_ " in
+			*" $pr "*)
+				prs="$prs$pr "
+				_gogo_will_wait $pr $id
+				;;
+		esac
+	done
+	eval gogo_prereq_$id=\"\$prs\"
 }
 
 # Resolves symbolic prerequisites in $@; result is stored in $prereq.
