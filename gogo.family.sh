@@ -213,7 +213,7 @@ _gogo_resolve_pr()
 
 _gogo_will_wait()
 {
-	eval "gogo_waiters_$1=\"\${gogo_waiters_$1}$2 \""
+	eval "case \" \$gogo_waiters_$1 \" in *\" $2 \"*) return ;; esac ; gogo_waiters_$1=\"\${gogo_waiters_$1}$2 \""
 }
 
 # Removes already finished prerequisites from $pr.
