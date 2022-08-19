@@ -74,6 +74,7 @@ gogo_fatal()
 gogo_log()
 {
 	local level="$1" ; shift
+	[ $level -le $gogo_log_level ] || return 0
 	gogo_colordisplay 90 "$@" >&2
 }
 
@@ -108,6 +109,7 @@ gogo_dance()
 {
 	gogo_callgirl "$@"
 	gogo_includes
+	local gogo_log_level=3
 	
 	local f
 	for f in "$@"
