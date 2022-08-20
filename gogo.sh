@@ -111,6 +111,15 @@ gogo_dance()
 	gogo_includes
 	local gogo_log_level=3
 	
+	while [ $# -gt 0 ]
+	do
+		case "$1" in
+			--debug) gogo_log_level=10 ;;
+			*) break ;;
+		esac
+		shift
+	done
+	
 	local f
 	for f in "$@"
 	do
