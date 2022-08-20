@@ -59,8 +59,6 @@ gogo_br()
 	
 	eval gogo_comm_$id='"$*"'
 	# Prerequisites. We first try to resolve all symbolic one to "hard" ones (IDs).
-	# @todo Have $id passed as PPID for each subtask launched during a function call; have subtasks added to the parent's prereqs;
-	#       Have the main loop be $id 0 (thus functions launched at root level are children of 0); have 0 finish when all its children have died.
 	gogo_resolve_prereq $id $prereq
 	eval gogo_prereq_$id='"$prereq"'
 	
