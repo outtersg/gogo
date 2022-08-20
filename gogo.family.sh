@@ -207,7 +207,7 @@ gogo_resolve_prereq()
 			# On ; return, letting aliases to be resolved later (once all prereqs before the ; are finished).
 			\;)
 				# But if every prereq preceding the ; has already finished, ignore the ;
-				case "$prereq" in "") continue ;; esac
+				case "$prereq" in "") shift ; continue ;; esac
 				prereq="$prereq $*"
 				return
 				;;
