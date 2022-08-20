@@ -58,9 +58,10 @@ gogo_gloop()
 
 #- Loop ------------------------------------------------------------------------
 
+gogo_sleep_step=0.1
 _gogo_wait_for()
 {
-	sleep 1
+	sleep $gogo_sleep_step
 }
 
 gogo_pool_loop()
