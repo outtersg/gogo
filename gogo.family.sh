@@ -289,7 +289,8 @@ gogo_ack_prereq()
 	while [ -z "$prereq" ]
 	do
 		case "$1" in
-			[^0-9]*) 
+			[^0-9]*)
+# À FAIRE: définir $id histoire que gogo_resolve_prereq l'inscrive.
 				gogo_resolve_prereq "$1" # Will fill $prereq if necessary.
 				shift
 				;;
