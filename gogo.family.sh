@@ -53,7 +53,7 @@ gogo_br()
 		shift
 	done
 	
-	case "$prereq" in *,*) prereq="`echo "$prereq" | tr , ' '`" ;; esac
+	case "$prereq" in *[,\;/]*) prereq="`echo "$prereq" | sed -e 's/,/ /g' -e 's#[/;]# ; #g'`" ;; esac
 	
 	# Store the task's command.
 	
@@ -189,12 +189,11 @@ _gogo_set_prereq_ids()
 
 # Resolves symbolic prerequisites in $@; result is stored in $prereq.
 # (prereqs found already finished are eaten immediately, doing a bit of gogo_ack_prereq())
-# Non-wildcard symbols are resolved immediately ("task,other" means "the latest instantiated tasks having names 'task' and 'other'").
-# @todo Shouldn't we be symetric with later case? could 'task' emit an 'other' that this one wants to wait for? May we distinguish with an ? or a ; ("task,other": the latest instanciated before me; "task,?other" or "task;other": resolve "other" only when task has run, so that 'other' can have been emitted by 'task')?
-# @todo "task!" could be read as "task and every subtask" (subtask being "any task added while task was running").
-# Wildcard symbols are resolved immediately only if they are first in line:
-#   "task,other~" means "the last 'task' task, and every 'other' that may have been instantiated by 'task'" (so wait 'task' to finish before evaluating 'other~')
-#   "other~"      here we have no preceding task (that could emit other 'other's), so look up for tasks named 'other' immediately
+# Symbols are evaluated at the time they are passed, so "task,other" means "the latest tasks having names 'task' and 'other' instantiated before we asked to launch the current one".
+# Each packet of symbols is resolved simultaneously (items in a packet are separated by ","; packets are separated by "/" or ";"). Thus:
+#   "task;other~" means "the last 'task' task, and every 'other' that may have been instantiated while 'task' ran" (so wait 'task' to finish before evaluating 'other~')
+#   "task,other~" is one packet, so both are evaluated, and the wildcard other~ will only get the 'other's that were programmed at the time we evaluated.
+# N.B.: as "task" means "task and all of its chidren", "task;other~" is of no use if 'other' is emitted by 'task' (a simple "task" will do), only if task is a watchdog for an unrelated emitter of 'other's.
 gogo_resolve_prereq()
 {
 	local pr id="$1" ; shift # _gogo_resolve_pr() relies on $id being defined.
