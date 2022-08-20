@@ -243,8 +243,9 @@ gogo_resolve_prereq()
 # If 
 _gogo_resolve_pr()
 {
-	local s=todo # Which set do we select from?
+	local suffix s=todo # Which set do we select from?
 	case "$1" in -1) shift ; s=last ;; esac
+	case "$1" in *\!|*-) suffix=_itself ; set -- "`echo "$1" | sed -e 's/.$//'`" ;; esac
 	eval 'pr="$gogo_'${s}_$1\"
 	case "$pr" in
 		?*)
@@ -253,6 +254,16 @@ _gogo_resolve_pr()
 			gogo_waiters_= # Si pas déjà référencé comme attendant!
 			# @todo Do modify gogo_waiters only if "$pr" was alphabetical. Else it should already be in it.
 			local idpr
+			case "$suffix" in
+				?*)
+					local pr2
+					for idpr in $pr
+					do
+						pr2="$pr2$idpr$suffix "
+					done
+					pr="$pr2"
+					;;
+			esac
 			for idpr in $pr
 			do
 				case "$idpr" in [0-9]*) _gogo_will_wait $idpr $id ;; esac
