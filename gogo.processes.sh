@@ -47,7 +47,7 @@ gogo_run()
 gogo_ploop()
 {
 	mkdir -p "`dirname "$gigo"`" && mkfifo "$gigo" || gogo_err "Unable to init fifo $gigo" || return 1
-	trap gogo_dech SIGCHLD
+	#trap gogo_dech SIGCHLD
 }
 
 # Garbage LOOP.
@@ -87,6 +87,7 @@ gogo_dech()
 	# @todo Are there any platforms where we need that?
 	# Our problem is that writing throws SIGCHLD, which writes, which signals, and so on.
 	#echo "gogo_dede" > "$GOGO_CHANNEL"
+	true
 } 
 
 # DEtect DEath.
