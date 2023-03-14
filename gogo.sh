@@ -103,6 +103,10 @@ gogo_includes()
 	do
 		. "$f"
 	done
+	for f in `find "$GOGO_SCRIPTS" -maxdepth 1 -name "gogo.*.lang" | sed -e 's#^.*/gogo\.##' -e 's#\.lang$##' | sort -r`
+	do
+		case $LANG in $f*) . "$GOGO_SCRIPTS/gogo.$f.lang" ; break ;; esac
+	done
 }
 
 gogo_dance()
