@@ -1,0 +1,3 @@
+Lance() { Start "$@" ; }
+Puis() { Then "$@" ; }
+Apres() { After "$@" ; }
