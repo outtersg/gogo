@@ -124,18 +124,30 @@ gogo_dance()
 		shift
 	done
 	
+	case $# in 0) command -v gogogo > /dev/null 2>&1 && set -- . || true ;; esac
+	
 	local f
 	for f in "$@"
 	do
 		if [ "$f" -ef "$GOGO_SCRIPTS/gogo.sh" ] ; then continue ; fi # In case we are called as sh gogo.sh userfile.sh
+		case "$f" in
+			.|"") true ;;
+			*)
+				if grep -q 'gogogo()' < "$f"
+				then
+					. "$f"
+					f=.
+				fi
+				;;
+		esac
 		# Handle two types of scripts:
 		# - those embedding their own gogogo() start point(); they are supposed to be a bunch of function definitions, and define a gogogo() function that start everything.
 		# - the simple ones, whose body *is* the script.
-		if grep -q 'gogogo()' < "$f"
-		then
-			. "$f"
+		case "$f" in
+			.|"")
 			gogo_boot_script() { ( export GOGO_CHANNEL ; gogogo ) & }
-		else
+			;;
+			*)
 			# The script may embed both utility function definitions (that should be played in the loop runner, so that its env gets the utilities),
 			# and a sequence of instructions to start subprocesses (that should be played by the loop filler).
 			# For having the utilities available in the (runner's) env, it cannot be run in a subshell like above;
@@ -151,7 +163,8 @@ gogo_dance()
 				export GOGO_CHANNEL=$gigo
 				# And now let the loop run.
 			}
-		fi
+			;;
+		esac
 		
 		gogo_run
 	done
