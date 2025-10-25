@@ -71,7 +71,8 @@ gogo_pool_loop()
 	while read dodo || { [ -n "$gogo_todo_" ] && dodo="_gogo_wait_for $gogo_todo_" ; }
 	do
 		gogo_log 9 "--- new instruction: $dodo"
-		$dodo
+		$dodo < /dev/null # Avoid our $gigo being eaten by tasks.
+		# @todo Preserve the original stdin, so that programs can use it for their interactive / configurable 1-lane parts, e.g. initial list of tasks to launch is received on stdin.
 # @todo Handle differently errors than successes.
 # Comment s'assurer qu'un processus lancé en asynchrone a ajouté ce qu'il voulait dans la pile avant de rendre la main? A priori quand on le lance il faut lancer sa liste de course puis ajouter une instruction disant "c'est bon j'ai terminé et j'ai empilé tout ce que j'avais.
 # Ceci pour implémenter les boucles for d'après le résultat d'une commande listant ce qu'il y a à faire.
