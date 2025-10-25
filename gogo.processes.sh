@@ -53,7 +53,10 @@ gogo_ploop()
 # Garbage LOOP.
 gogo_gloop()
 {
-	rm "$gigo"
+	local gigodanio="`dirname "$gigo"`" # gigo's directory of associated nodes for I/O.
+	case "$gigodanio" in /tmp/temp.gogo.*)
+		rm -Rf "$gigodanio"
+	esac
 }
 
 #- Loop ------------------------------------------------------------------------
