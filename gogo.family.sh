@@ -66,10 +66,10 @@ gogo_br()
 	gogo_todo_="$gogo_todo_ $id"
 	if [ -n "$name" ]
 	then
-#		case "$gogo_names" in
-#			*" $name "*) true ;;
-#			*) gogo_names="$gogo_names$name "
-#		esac
+		case " $gogo_names" in
+			*" $name "*) true ;;
+			*) gogo_names="$gogo_names$name "
+		esac
 		eval \
 			gogo_last_$name=$id \
 			gogo_todo_$name='"$gogo_todo_'$name $id'"'
@@ -213,6 +213,12 @@ gogo_resolve_prereq()
 						IFS='~'
 						gogo_tifs _gogo_resolve_pr $pr
 				;;
+			# Wildcards. Lookup $gogo_names to find matching, already launched, tasks.
+			*\**)
+				local name prs=
+				eval 'for name in $gogo_names ; do case "$name" in '"$pr"') _gogo_resolve_pr "$name" ; case "$pr" in ?*) prs="$prs$pr " ;; esac ;; esac ; done' >&2
+				pr="$prs"
+				;;
 			# [0-9]*: A numeric ID (already resolved), we just have to check it has finished:
 			# @duplicate _gogo_set_prereq_ids()
 			[0-9]*)
@@ -225,7 +231,6 @@ gogo_resolve_prereq()
 			*)
 				_gogo_resolve_pr -1 "$pr"
 				;;
-			# @todo Handle *\* (x~ resolves to (possibly multiple) tasks named x, whereas x* refers to x as well as xy or xylophone).
 		esac
 		case "$pr" in
 			?*) prereq="$prereq$pr " ;;
