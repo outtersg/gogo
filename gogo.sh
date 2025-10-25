@@ -133,13 +133,19 @@ gogo_dance()
 		if [ "$f" -ef "$GOGO_SCRIPTS/gogo.sh" ] ; then continue ; fi # In case we are called as sh gogo.sh userfile.sh
 		
 		case "$f" in
-			.|"") true ;;
+			""|*[^a-zA-Z0-9_]*) true ;;
 			*)
 				if PATH=/dev/null command -v "$f" > /dev/null 2>&1
 				then
 					gogogo="$f"
 					f=.
-				elif [ -f "$f" ] && grep -q 'gogogo()' < "$f"
+				fi
+				;;
+		esac
+		case "$f" in
+			.|"") true ;;
+			*)
+				if [ -f "$f" ] && grep -q 'gogogo()' < "$f"
 				then
 					. "$f"
 					f=.
