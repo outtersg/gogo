@@ -72,6 +72,7 @@ gogo_pool_loop()
 	while read dodo || { [ -n "$gogo_todo_" ] && dodo="_gogo_wait_for $gogo_todo_" ; }
 	do
 		gogo_log 9 "--- new instruction: $dodo"
+		case "$dodo" in "gogo_tifs$GOGO_IFS"*) IFS="$GOGO_IFS" ;; esac # @todo Generalize to any $IFS (first char after gogo_tifs).
 		$dodo <&7 # Avoid our $gigo being eaten by tasks.
 # @todo Handle differently errors than successes.
 # Comment s'assurer qu'un processus lancé en asynchrone a ajouté ce qu'il voulait dans la pile avant de rendre la main? A priori quand on le lance il faut lancer sa liste de course puis ajouter une instruction disant "c'est bon j'ai terminé et j'ai empilé tout ce que j'avais.
@@ -127,21 +128,20 @@ gogo_push()
 	set -- --from "$GOGO_ID" "$@"
 	IFS="$GOGO_IFS"
 	# @todo In case of really special characters (LF), encode the command line.
-	echo "gogosse" "$*" >> $GOGO_CHANNEL
+	echo "gogo_tifs${GOGO_IFS}gogosse$GOGO_IFS$*" >> $GOGO_CHANNEL
 	unset IFS
 }
 
 # Schedule Subtask Execution.
 gogosse()
 {
-	IFS="$GOGO_IFS"
-	gogo_tifs gogo_br $*
+	gogo_br "$@"
 }
 
 # Launch Independently in an Asynchronous Thread from Here
 gogoliath()
 {
-	case $# in 1) eval "gogoliath $1 \$gogo_comm_$1" ; return ;; esac
+	case $# in 1) IFS="$GOGO_IFS" ; eval "gogo_tifs gogoliath $1 \$gogo_comm_$1" ; return ;; esac
 	
 	# Launching a simple checkpoint (e.g. when we want to launch 5, 6, 7 after 1, 2, 3 have finished, it is simpler to have a pseudo-task 4 that waits for 1, 2, 3, and then having 5, 6, 7 each wait on 4, than having 5, 6, 7 each rely directly on 1, 2, and 3)?
 	# Then no need to launch and wait for completion, notifying waiters directly is more efficient.

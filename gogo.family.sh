@@ -57,7 +57,9 @@ gogo_br()
 	
 	# Store the task's command.
 	
+	IFS="$GOGO_IFS"
 	eval gogo_comm_$id='"$*"'
+	unset IFS
 	# Prerequisites. We first try to resolve all symbolic one to "hard" ones (IDs).
 	gogo_resolve_prereq $id $prereq
 	eval gogo_prereq_$id='"$prereq"'
