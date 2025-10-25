@@ -126,14 +126,20 @@ gogo_dance()
 	
 	case $# in 0) command -v gogogo > /dev/null 2>&1 && set -- . || true ;; esac
 	
-	local f
+	local f gogogo
 	for f in "$@"
 	do
+		gogogo=gogogo
 		if [ "$f" -ef "$GOGO_SCRIPTS/gogo.sh" ] ; then continue ; fi # In case we are called as sh gogo.sh userfile.sh
+		
 		case "$f" in
 			.|"") true ;;
 			*)
-				if grep -q 'gogogo()' < "$f"
+				if PATH=/dev/null command -v "$f" > /dev/null 2>&1
+				then
+					gogogo="$f"
+					f=.
+				elif [ -f "$f" ] && grep -q 'gogogo()' < "$f"
 				then
 					. "$f"
 					f=.
@@ -145,7 +151,7 @@ gogo_dance()
 		# - the simple ones, whose body *is* the script.
 		case "$f" in
 			.|"")
-			gogo_boot_script() { ( export GOGO_CHANNEL ; gogogo ) & }
+			gogo_boot_script() { ( export GOGO_CHANNEL ; $gogogo ) & }
 			;;
 			*)
 			# The script may embed both utility function definitions (that should be played in the loop runner, so that its env gets the utilities),
